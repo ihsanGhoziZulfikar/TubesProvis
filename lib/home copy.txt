@@ -1,6 +1,69 @@
+import 'package:android/activityUmkm.dart';
+import 'package:android/notifikasiInvestor.dart';
 import 'package:flutter/material.dart';
+import 'profil_umkm.dart';
+import 'umkmDetailPage.dart';
+import 'umkmProfile.dart';
 
 import 'data_watchlist.dart';
+import 'konfirmasi.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class UmkmModel {
+  int id;
+  String nama;
+  String alamat;
+  String deskripsi;
+  String jenis;
+
+  UmkmModel({
+    required this.id,
+    required this.nama,
+    required this.alamat,
+    required this.deskripsi,
+    required this.jenis,
+  });
+
+  factory UmkmModel.fromJson(Map<String, dynamic> json) {
+    return UmkmModel(
+      id: json['id'] ?? '',
+      nama: json['nama'] ?? '',
+      alamat: json['alamat'] ?? '',
+      deskripsi: json['deskripsi'] ?? '',
+      jenis: json['jenis'] ?? '',
+    );
+  }
+}
+
+class UmkmCubit extends Cubit<List<UmkmModel>> {
+  String url = "http://127.0.0.1:8000/tampilkan_semua_umkm/";
+
+  UmkmCubit() : super([]);
+
+  Future<List<UmkmModel>> fetchData() async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final dataList = jsonData['data'] as List<dynamic>;
+        final umkmList = dataList
+            .map((item) => UmkmModel.fromJson(item as Map<String, dynamic>))
+            .toList();
+        print(dataList);
+        emit(umkmList);
+        return umkmList;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print("aaa");
+      throw Exception('Failed to load data: $e');
+    }
+  }
+}
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.title});
@@ -12,6 +75,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final umkmCubit = UmkmCubit();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,81 +83,70 @@ class _HomeState extends State<Home> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: 80.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 315.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFD6E4F0),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          children: const [
-                            SizedBox(width: 10.0),
-                            Icon(
-                              Icons.search,
-                              size: 35,
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Cari Umkm ...',
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.notifications,
-                        size: 35,
-                      ),
-                    ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 80,
+                    height: 80,
                   ),
-                ),
+                ],
               ),
               Container(
                 padding: EdgeInsets.only(
-                    left: 20.0, right: 16.0, top: 8.0, bottom: 20.0),
+                    left: 20.0, right: 20.0, top: 25.0, bottom: 25.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://cdn-icons-png.flaticon.com/512/4086/4086679.png',
-                      ),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            'https://cdn-icons-png.flaticon.com/512/4086/4086679.png',
+                          ),
+                        ),
+                        SizedBox(width: 10.0),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Selamat datang, ',
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Colors.black),
+                              ),
+                              TextSpan(
+                                  text: "Maulana",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15.0,
+                                    color: Colors.black,
+                                  )),
+                              WidgetSpan(
+                                child: Text(
+                                  '! 👋',
+                                  style: TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10.0),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Selamat datang, ',
-                            style:
-                                TextStyle(fontSize: 15.0, color: Colors.black),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return NotifikasiInvestor();
+                            },
                           ),
-                          TextSpan(
-                              text: "Maulana",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
-                                color: Colors.black,
-                              )),
-                          WidgetSpan(
-                            child: Text(
-                              '! 👋',
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                          ),
-                        ],
+                        );
+                      },
+                      child: Icon(
+                        Icons.notifications,
+                        size: 35,
+                        color: Color(0xFF1C355E),
                       ),
                     ),
                   ],
@@ -241,10 +294,17 @@ class _HomeState extends State<Home> {
                                   ),
                                   child: ElevatedButton(
                                     onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return UmkmDetailPage();
+                                          },
+                                        ),
+                                      );
                                       // Aksi buat ngasih pinjaman
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFF669AD9),
+                                      backgroundColor: Color(0xFF669AD9),
                                       padding: EdgeInsets.zero,
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -277,7 +337,7 @@ class _HomeState extends State<Home> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 16.0),
                     child: const Text(
-                      'Watchlist',
+                      'Usaha Mitra Yang Didanai',
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -293,45 +353,42 @@ class _HomeState extends State<Home> {
                   color: Color(0xFFD6E4F0),
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: Column(children: [
-                  DataWatchlist(
-                    img:
-                        'https://swamediainc.storage.googleapis.com/swa.co.id/wp-content/uploads/2021/01/20122139/daging-sapi.jpg',
-                    name: 'Ibu Ira',
-                    nameUsaha: 'Properti',
-                    location: 'Bandung',
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  DataWatchlist(
-                    img:
-                        'https://swamediainc.storage.googleapis.com/swa.co.id/wp-content/uploads/2021/01/20122139/daging-sapi.jpg',
-                    name: 'Ibu Ira',
-                    nameUsaha: 'Properti',
-                    location: 'Bandung',
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  DataWatchlist(
-                    img:
-                        'https://swamediainc.storage.googleapis.com/swa.co.id/wp-content/uploads/2021/01/20122139/daging-sapi.jpg',
-                    name: 'Ibu Ira',
-                    nameUsaha: 'Properti',
-                    location: 'Bandung',
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  DataWatchlist(
-                    img:
-                        'https://swamediainc.storage.googleapis.com/swa.co.id/wp-content/uploads/2021/01/20122139/daging-sapi.jpg',
-                    name: 'Ibu Ira',
-                    nameUsaha: 'Properti',
-                    location: 'Bandung',
-                  ),
-                ]),
+                child: FutureBuilder<List<UmkmModel>>(
+                  future: umkmCubit.fetchData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final umkmList = snapshot.data;
+                      return Container(
+                        height: 500,
+                        child: ListView.builder(
+                          itemCount: umkmList?.length,
+                          itemBuilder: (context, index) {
+                            if (umkmList![0].nama != "") {
+                              return Column(
+                                children: [
+                                  DataWatchlist(
+                                    id: umkmList[index].id,
+                                    img:
+                                        'https://swamediainc.storage.googleapis.com/swa.co.id/wp-content/uploads/2021/01/20122139/daging-sapi.jpg',
+                                    nama: umkmList[index].nama,
+                                    alamat: umkmList[index].alamat,
+                                    deskripsi: umkmList[index].deskripsi,
+                                    jenis: umkmList[index].jenis,
+                                  ),
+                                  SizedBox(height: 16),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
               SizedBox(
                 height: 20,

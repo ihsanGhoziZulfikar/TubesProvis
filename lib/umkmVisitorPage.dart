@@ -172,7 +172,7 @@ class _UmkmVisitorPageState extends State<UmkmVisitorPage> {
                                     // Aksi buat ngasih pinjaman
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFF669AD9),
+                                    backgroundColor: Color(0xFF669AD9),
                                     padding: EdgeInsets.zero,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(

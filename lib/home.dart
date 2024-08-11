@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
                               } else {
                                 final listPeminjaman = snapshot.data;
                                 return Container(
-                                  height: 250.0,
+                                  height: 254.0,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: listPeminjaman?.length,
@@ -337,7 +337,8 @@ class _HomeState extends State<Home> {
                                                   // Aksi buat ngasih pinjaman
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: Color(0xFF669AD9),
+                                                  backgroundColor:
+                                                      Color(0xFF669AD9),
                                                   padding: EdgeInsets.zero,
                                                   shape:
                                                       const RoundedRectangleBorder(

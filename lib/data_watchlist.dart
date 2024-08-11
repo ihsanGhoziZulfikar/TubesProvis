@@ -62,7 +62,7 @@ class DataWatchlist extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(left: 15, top: 10.0, bottom: 10.0),
               width: 245.0,
-              height: 80.0,
+              height: 81.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20.0),
@@ -73,7 +73,7 @@ class DataWatchlist extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 2.5),
+                  // SizedBox(height: 2.5),
                   Text(
                     nama,
                     style: TextStyle(

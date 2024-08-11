@@ -346,7 +346,7 @@ class UmkmDetailPage extends StatelessWidget {
                                                 ),
                                               ),
                                               SizedBox(
-                                                width: 7,
+                                                width: 5,
                                               ),
                                               Text(
                                                 'Beri Pinjaman',

@@ -333,7 +333,7 @@ class dana2 extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
+                                  padding: const EdgeInsets.only(top: 0.0),
                                   child: GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
@@ -406,7 +406,7 @@ class dana2 extends StatelessWidget {
                                             color: Colors.black,
                                           ),
                                         ),
-                                        SizedBox(height: 5),
+                                        // SizedBox(height: 5),
                                         Text(
                                           'Rp${data[index].jumlah},-',
                                           style: GoogleFonts.beVietnamPro(

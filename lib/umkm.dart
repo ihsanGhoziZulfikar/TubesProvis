@@ -147,7 +147,7 @@ class _UmkmState extends State<Umkm> {
                                     // Aksi buat ngasih pinjaman
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFF669AD9),
+                                    backgroundColor: Color(0xFF669AD9),
                                     padding: EdgeInsets.zero,
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
